@@ -15,5 +15,5 @@ class Comment(SqlAlchemyBase, UserMixin, SerializerMixin):
     send_time = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now())
     sender = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
     receiver = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("publications.id"))
-    user = orm.relation('User')
-    art = orm.relation('Publication')
+    user = orm.relationship('User')
+    art = orm.relationship('Publication')

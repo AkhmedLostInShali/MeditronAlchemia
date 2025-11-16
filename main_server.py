@@ -12,10 +12,7 @@ from data import db_session, my_parsers
 
 from data.doctors import Doctor
 
-from data.forms.login import LoginForm
-from data.forms.register import RegisterForm, ExtensionForm
-
-from data.resources import doctor_resource
+from data.resources import doctor_resource, patient_resource
 
 import logging
 
@@ -32,25 +29,27 @@ doctor_parser = my_parsers.DoctorParser()
 
 
 def main():
-    db_session.global_init('db/test.db') # добавить название БД
-    api.add_resource(doctor_resource.DoctorsResource, '/api/doctors/<int:users_id>')
+    db_session.global_init('db/paintogram.db')  # добавить название БД
+    api.add_resource(doctor_resource.DoctorsResource, '/api/doctors/<string:doctors_id>')
     api.add_resource(doctor_resource.DoctorsListResource, '/api/doctors')
+    # api.add_resource(patient_resource.PatientsResource, '/api/patients/<string:patients_id>')
+    api.add_resource(patient_resource.PatientsListResource, '/api/patients')
     app.run(port=8080, host='127.0.0.1')
 
 
 @login_manager.user_loader
 def load_user(doctor_id):
     db_sess = db_session.create_session()
-    return db_sess.query(Doctor).get(doctor_id)
+    return db_sess.get(Doctor, doctor_id)
 
 
-@app.route('/api/login', methods=['GET', 'POST'])
+@app.route('/api/login', methods=['POST'])
 def login():
     db_sess = db_session.create_session()
     email = request.json.get('email').lower()
     password = request.json.get('password')
     remember_me = request.json.get('remember_me')
-    doctor = db_sess.query(Doctor).filter(Doctor.email.is_(email)).first()
+    doctor = db_sess.query(Doctor).filter(Doctor.email == email).first()
     if not doctor:
         return jsonify({'error': 'No doctor with such email'})
     if doctor.check_password(password=password):
@@ -63,11 +62,11 @@ def login():
 @app.route('/api/logout')
 def logout():
     logout_user()
+    return jsonify({'success': 'OK'})
 
 
-@app.route('/api/registration', methods=['GET', 'POST'])
+@app.route('/api/registration', methods=['POST'])
 def registration():
-    args = doctor_parser.parse_args()
     email = request.json.get('email').lower()
     password = request.json.get('password')
     password_again = request.json.get('password_again')
@@ -80,9 +79,11 @@ def registration():
                      'password_again': password_again,
                      'name': name,
                      'surname': surname}).json()
+    if 'error' in req:
+        return req
     logging.info(str(req))
     db_sess = db_session.create_session()
-    doctor = db_sess.query(Doctor).filter(Doctor.email.is_(email)).first()
+    doctor = db_sess.query(Doctor).filter(Doctor.email == req['email']).first()
     login_user(doctor, remember=remember_me)
     return jsonify({'success': 'OK'})
 

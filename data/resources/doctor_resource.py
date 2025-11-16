@@ -1,4 +1,8 @@
+from random import choices
+from string import digits, ascii_letters
+
 from flask import jsonify, request
+from flask_login import login_required, current_user
 from flask_restful import abort, Resource
 from .. import db_session, my_parsers
 from ..doctors import Doctor
@@ -17,7 +21,10 @@ def abort_if_doctor_not_found(doctors_id):
 
 
 class DoctorsResource(Resource):
+    @login_required
     def get(self, doctors_id):
+        if current_user.id != doctors_id:
+            return abort(403)
         abort_if_doctor_not_found(doctors_id)
         db_sess = db_session.create_session()
         doctor = db_sess.query(Doctor).get(doctors_id)
@@ -74,8 +81,10 @@ class DoctorsListResource(Resource):
             return jsonify({'error': 'Email already exists'})
 
         doctor = Doctor()
-        if args.get('id'):
-            doctor.id = args.get('id')
+        rand_id = ''.join(choices(digits + ascii_letters + '-_', k=8))
+        while rand_id in db_sess.query(Doctor.id).all():
+            rand_id = ''.join(choices(digits + ascii_letters + '-_', k=8))
+        doctor.id = rand_id
         doctor.email = args['email'].lower()
         doctor.surname = args['surname']
         doctor.name = args['name']
@@ -83,4 +92,7 @@ class DoctorsListResource(Resource):
 
         db_sess.add(doctor)
         db_sess.commit()
-        return jsonify({'success': 'OK'})
+        return jsonify({
+            'success': 'OK',
+            'email': doctor.email
+        })

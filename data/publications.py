@@ -25,7 +25,7 @@ class Publication(SqlAlchemyBase, UserMixin, SerializerMixin):
     publication_date = sqlalchemy.Column(sqlalchemy.DateTime, default=datetime.datetime.now())
     reported = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
     author = sqlalchemy.Column(sqlalchemy.Integer, sqlalchemy.ForeignKey("users.id"))
-    user = orm.relation('User')
-    cheers = orm.relation("User",
+    user = orm.relationship('User')
+    cheers = orm.relationship("User",
                           secondary="association",
                           backref="cheered")
