@@ -17,13 +17,13 @@ def global_init(db_file):
     if not db_file or not db_file.strip():
         raise Exception("Необходимо указать файл базы данных.")
 
-    conn_str = f'postgresql://homePCuser:totallyRandom@localhost:5432/postgres'
+    conn_str = f'postgresql://admin:admin@localhost:5432/mediton'
     print(f"Подключение к базе данных по адресу {conn_str}")
 
     engine = sa.create_engine(conn_str, echo=False)
     __factory = orm.sessionmaker(bind=engine)
 
-    from . import __all_models
+    from .models import __all_models
 
     SqlAlchemyBase.metadata.create_all(engine)
 

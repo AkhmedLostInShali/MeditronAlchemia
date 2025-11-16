@@ -1,10 +1,7 @@
-from flask import url_for
 import sqlalchemy
-from sqlalchemy import orm
 from sqlalchemy_serializer import SerializerMixin
 
-from .db_session import SqlAlchemyBase
-from werkzeug.security import generate_password_hash, check_password_hash
+from data.db_session import SqlAlchemyBase
 
 
 class Patient(SqlAlchemyBase, SerializerMixin):

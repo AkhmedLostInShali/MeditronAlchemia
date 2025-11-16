@@ -1,61 +1,70 @@
+import datetime
 from random import choices
 from string import digits, ascii_letters
 
-from flask import jsonify
+from flask import jsonify, request
 from flask_login import login_required, current_user
 from flask_restful import abort, Resource
 from .. import db_session
+from . import my_parsers
 from data.models.patients import Patient
+from data.models.patient_entries import PatientEntry
 import logging
-
-from .nickname_generator import generate_nickname
 
 logging.basicConfig(level=logging.INFO)
 
+parser = my_parsers.PatientEntryParser()
 
-def abort_if_patients_not_found(patients_id):
+
+def abort_if_entry_not_found(patients_id):
     session = db_session.create_session()
     patient = session.query(Patient).get(patients_id)
     if not patient:
         abort(404, message=f"Patient {patients_id} not found")
 
 
-class PatientsListResource(Resource):
+class EntriesListResource(Resource):
     @login_required
     def get(self):
+        patient_id = request.json.get('patient_id')
+        if not patient_id:
+            return abort(404, message="Patient id not found")
         db_sess = db_session.create_session()
-        patients = db_sess.query(Patient).filter_by(doctors_id=current_user.id).all()
+        entries = db_sess.query(PatientEntry).filter_by(patient_id=patient_id).all()
         out_dict = dict()
-        for patient in patients:
-            out_dict[patient.id] = patient.nickname
+        for entry in entries:
+            out_dict[entry.id] = entry.to_dict(only=('hr', 'her2', 'race', 'menopausal_status', 'entry_date'))
         return jsonify({
             'success': 'OK',
-            'doctors_id': current_user.id,
-            'patients': out_dict
+            'patients_id': current_user.id,
+            'entries': out_dict
         })
 
     @login_required
     def post(self):
         db_sess = db_session.create_session()
+        args = parser.parse_args()
 
-        patient = Patient()
+        entry = PatientEntry()
         rand_id = ''.join(choices(digits + ascii_letters + '-_', k=8))
         while rand_id in db_sess.query(Patient.id).all():
             rand_id = ''.join(choices(digits + ascii_letters + '-_', k=8))
-        patient.id = rand_id
-        rand_nickname = generate_nickname()
-        while rand_nickname in db_sess.query(Patient.nickname).all():
-            rand_nickname = generate_nickname()
-        patient.nickname = rand_nickname
-        patient.doctors_id = current_user.id
+        entry.id = rand_id
+        entry.entry_date = datetime.date.today()
+        entry.age = args['age']
+        entry.legacy = args['legacy']
+        entry.hr = args['hr']
+        entry.her2 = args['her2']
+        entry.race = args['race']
+        entry.menopausal_status = args['menopausal_status']
+        entry.patient_id = args['patient_id']
 
-        db_sess.add(patient)
+        db_sess.add(entry)
         db_sess.commit()
         return jsonify({'success': 'OK'})
 
 
-# Я тут оставил базовые эндпойнты на случай если пригодятся. Эти работают с
-# конкретным пациентом по его айди, и надо будет в строке подключения апи переменную сделать
+# Скопировано с patient_resource.py, в случае чего тоже можно привести в силу
 #
 # class PatientsResource(Resource):
     # def get(self, patients_id):
