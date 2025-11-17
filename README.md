@@ -173,8 +173,32 @@ __Tumor Trajectory Forecast__
 - ML-driven predicted tumor size
 - visualization for top-K regimens
 
+
+## 🚀 Running Instructions
+
+### 1. Clone the repository
+```bash
+git clone https://github.com/AkhmedLostInShali/MeditronAlchemia.git
+cd MeditronAlchemia
+```
+
+### 2. (Optional) Create and activate virtual environment
+
+```
+macOS / Linux
+python3 -m venv venv
+source venv/bin/activate
+```
+
+For notebook
+```
+pip install jupyterlab ipykernel
+python -m ipykernel install --user --name meditron
+```
+
 ### Future Work
 
+- Complete web interface (almost finished)
 - Integrate MRI-derived radiomics for direct tumor quantification
 - Build a full PK/PD-based tumor regression model
 - Add Bayesian optimization to choose ideal regimens
