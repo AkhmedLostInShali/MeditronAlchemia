@@ -196,6 +196,33 @@ pip install jupyterlab ipykernel
 python -m ipykernel install --user --name meditron
 ```
 
+### 4. Data
+
+Preprocessed dataset is already included:
+
+```
+data/clean_data.csv
+```
+
+(under active development)
+
+### 5. Run the main notebook
+jupyter notebook
+
+
+Open:
+```
+code/new_model.ipynb
+```
+
+The notebook provides:
+
+- tumor size analysis
+- treatment arm comparison
+- pCR prediction
+- regimen ranking
+- tumor trajectory simulation
+
 ### Future Work
 
 - Complete web interface (almost finished)
