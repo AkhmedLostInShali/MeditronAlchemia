@@ -1,8 +1,3 @@
-# 🧬 MeditronAlchemia  
-### *Personalized Chemotherapy Optimization using ML + Tumor Growth Modeling*
-
-This repository contains the full pipeline for **predicting tumor response**, **simulating tumor growth dynamics under different regimens**, and **generating optimized chemotherapy recommendations** using machine learning and based on I-SPY 2 clinical trial [[1](https://www.cancerimagingarchive.net/collection/ispy2/)].
-
 # MisisAlchemia — Tumor Response Modeling & Treatment Optimization  
 ### Data preparation
 - Tumor dynamics modeling 
@@ -10,8 +5,6 @@ This repository contains the full pipeline for **predicting tumor response**, **
 - Regimen ranking
 
 This notebook implements a full pipeline for **preprocessing I-SPY2 clinical data**,  **modelling tumor size dynamics**, and **predicting treatment effectiveness** using ML.
-
----
 
 ## Dataset
 
@@ -139,11 +132,8 @@ plot_tumor_trajectories(traj_df)
 The output is a smooth trajectory for each regimen:
 
 - week 0
-
 - week 3 (pred)
-
 - week 6 (pred)
-
 - week 18 (pred ≈ pre-surgical)
 
 Visualization uses a modern pastel color scheme with shading.
@@ -175,7 +165,6 @@ __Machine Learning__
 - GradientBoostingRegressor (tumor size prediction)
 
 __Personalized Treatment Recommendation__
-
 - ranked regimens
 - probability of complete response
 - interactive plotting
@@ -184,14 +173,11 @@ __Tumor Trajectory Forecast__
 - ML-driven predicted tumor size
 - visualization for top-K regimens
 
-
-
 ### Future Work
 
 - Integrate MRI-derived radiomics for direct tumor quantification
 - Build a full PK/PD-based tumor regression model
 - Add Bayesian optimization to choose ideal regimens
-- Deploy interactive version via Streamlit or FastAPI
 - Include confidence intervals for trajectory predictions
 
 ## References
