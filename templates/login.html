@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="auth-page">
+        <form class="auth-form" action method="post">
+            <h1>Вход</h1>
+            {{ form.hidden_tag() }}
+            {{ form.email(placeholder="Введите почту", type="email") }}
+            {{ form.password(placeholder="Введите пароль", type="password") }}
+            {{ form.submit(type="submit") }}
+            <div class="remember-me">
+                {{ form.remember_me() }} {{ form.remember_me.label }}
+            </div>
+            <div>{{ message }}</div>
+
+        </form>
+    </div>
+{% endblock %}

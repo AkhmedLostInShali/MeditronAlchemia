@@ -25,7 +25,10 @@ def abort_if_entry_not_found(patients_id):
 
 class EntriesListResource(Resource):
     @login_required
-    def get(self):
+    def post(self):
+        # if not request.is_json:
+        #     return jsonify({'error': 'Request must be JSON'}), 415
+
         patient_id = request.json.get('patient_id')
         if not patient_id:
             return abort(404, message="Patient id not found")
@@ -40,6 +43,8 @@ class EntriesListResource(Resource):
             'entries': out_dict
         })
 
+
+class EntriesAddResource(Resource):
     @login_required
     def post(self):
         db_sess = db_session.create_session()

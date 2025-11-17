@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link type="image/x-icon" rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>{{title}}</title>
+
+</head>
+<body style="background-color: #ffffff">
+<main role="main" class="container">
+    {% block content %}{% endblock %}
+    {% block scripts %}
+<!--    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
+<!--    <script>-->
+<!--        $(document).ready(function() {-->
+
+<!--        let selectedId = null;-->
+<!--        const cache = {};-->
+
+<!--        $('.patient_li').click(function() {-->
+<!--            const $this = $(this);-->
+<!--            const patientId = $this.attr('id');-->
+
+<!--            window.location.href = `/${patientId}`;-->
+<!--            selectedId = patientId;-->
+<!--        });-->
+
+<!--        function toggleItem(history-header) {-->
+<!--            const content = header.nextElementSibling;-->
+<!--            const arrow = header.querySelector('.arrow');-->
+
+
+<!--            if (content.style.display === "block") {-->
+<!--                content.style.display = "none";-->
+<!--                arrow.classList.remove('rotate');-->
+<!--            } else {-->
+<!--                content.style.display = "block";-->
+<!--                arrow.classList.add('rotate');-->
+<!--            }-->
+<!--        }-->
+
+<!--        function loadDataFromServer(id) {-->
+<!--            $('#resultsContainer').html('<div class="loading-spinner">Загрузка...</div>');-->
+
+<!--            $.post('/api/entries', {-->
+<!--                patient_id: selectedId-->
+<!--            })-->
+<!--            .done(function(response) {-->
+<!--                displayData(response);-->
+<!--            })-->
+<!--            .fail(function(xhr) {-->
+<!--                console.error('POST failed:', xhr.responseText);-->
+<!--                $('#resultsContainer').html('<div class="error">Ошибка</div>');-->
+<!--            });-->
+<!--        }-->
+
+<!--        function displayData(responseData) {-->
+<!--            const entries = responseData.entries;-->
+<!--            const container = $('#resultsContainer');-->
+<!--            container.empty(); // Очищаем контейнер-->
+
+<!--            if (!entries || Object.keys(entries).length === 0) {-->
+<!--                container.html('<div class="no-data">Нет данных о приемах</div>');-->
+<!--                return;-->
+<!--            }-->
+
+<!--            Object.entries(entries).forEach(([entryId, entryData]) => {-->
+<!--                const entryHtml = createEntryCard(entryId, entryData);-->
+<!--                container.append(entryHtml);-->
+<!--            });-->
+<!--        }-->
+
+<!--        function createEntryCard(entryId, entryData) {-->
+<!--            return `-->
+<!--                <div class="entry-card" data-entry-id="${entryId}">-->
+<!--                    <div class="entry-header">-->
+<!--                        <h3>Приём пациента</h3>-->
+<!--                        <span class="entry-id">ID: ${entryId}</span>-->
+<!--                    </div>-->
+<!--                    <div class="entry-body">-->
+<!--                        <div class="entry-field">-->
+<!--                            <label>Дата приёма:</label>-->
+<!--                            <span class="entry-date">${entryData.entry_date}</span>-->
+<!--                        </div>-->
+<!--                        <div class="entry-field">-->
+<!--                            <label>HER2 статус:</label>-->
+<!--                            <span class="her2-status ${entryData.her2 ? 'positive' : 'negative'}">-->
+<!--                                ${entryData.her2 ? 'Положительный' : 'Отрицательный'}-->
+<!--                            </span>-->
+<!--                        </div>-->
+<!--                        <div class="entry-field">-->
+<!--                            <label>HR статус:</label>-->
+<!--                            <span class="hr-status ${entryData.hr ? 'positive' : 'negative'}">-->
+<!--                                ${entryData.hr ? 'Положительный' : 'Отрицательный'}-->
+<!--                            </span>-->
+<!--                        </div>-->
+<!--                        <div class="entry-field">-->
+<!--                            <label>Менопаузальный статус:</label>-->
+<!--                            <span class="menopausal-status">${getMenopausalStatusText(entryData.menopausal_status)}</span>-->
+<!--                        </div>-->
+<!--                        <div class="entry-field">-->
+<!--                            <label>Раса:</label>-->
+<!--                            <span class="race">${getRaceText(entryData.race)}</span>-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </div>-->
+<!--            `;-->
+<!--        }-->
+
+<!--        });-->
+<!--    </script>-->
+    {% endblock %}
+</main>
+</body>
+</html>

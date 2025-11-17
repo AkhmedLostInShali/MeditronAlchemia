@@ -1,0 +1,199 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="main-page">
+        <header>
+            <div class="left-side">
+                <button>file</button>
+                <button>options</button>
+            </div>
+
+            <div class="right-side">
+                <img src="icons/profile.png" alt="" />
+                <div class="username">{{ doctors_info["surname"] }} {{ doctors_info["name"][0] }}.</div>
+            </div>
+        </header>
+
+        <div class="layout">
+            <div class="patients-side">
+                <div class="search">
+                    <input type="text" placeholder="Найти пациента" />
+                    <button>ID <span class="arrow">↓</span></button>
+                </div>
+
+                <div class="patients-list">
+                    {% for id, nickname in patients_info.items() %}
+                    {% if id == patient_id %}
+                        <div class="patient_li active" id="{{ id }}">{{ nickname }}</div>
+                    {% else %}
+                        <div class="patient_li" id="{{ id }}">{{ nickname }}</div>
+                    {% endif %}
+                    {% endfor %}
+                </div>
+
+                <div class="add-patient">
+                    Добавить пациента
+                </div>
+            </div>
+
+            <div class="patient-content">
+                {% if patient_id %}
+                <div class="patient_header">
+                    <div class="header-id">#{{ patient_id }} {{ patients_info[patient_id] }}</div>
+                </div>
+
+
+                <div class="tabs">
+                    <div class="tab" data-tab="tab-dynamics">Динамика</div>
+                    <div class="tab" data-tab="tab-recommendations">Рекомендации</div>
+                    <div class="tab active" data-tab="tab-history">История</div>
+                </div>
+
+                <div class="tab-content" id="tab-dynamics">
+                    <div>{{ prognosis }}</div>
+                </div>
+
+                <div class="tab-content" id="tab-recommendations">
+                    <div></div>
+                </div>
+
+                <div class="tab-content active" id="tab-history">
+                    {% for entry in entries_info %}
+                    <div class="history-item">
+                        <div class="history-header" onclick="toggleItem(this)">
+                            <div>{{ entry['id'] }}</div>
+                            <div>{{ entry['entry_date'] }}</div>
+                            <div class="arrow">▶</div>
+                        </div>
+                        <div class="history-content">
+                            <div class="param-row">Возраст <span class="arrow-small">→</span> {{ entry['age'] }}</div>
+                            <div class="param-row">HR <span class="arrow-small">→</span> {{ entry['hr'] }}</div>
+                            <div class="param-row">HER2 <span class="arrow-small">→</span> {{ entry['her2'] }}</div>
+                            <div class="param-row">Раса <span class="arrow-small">→</span> {{ entry['race'] }}</div>
+                            <div class="param-row">Менопауза <span class="arrow-small">→</span> {{ entry['menopausal_status'] }}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                    {% else %}
+                    <div class="patient_header">
+                        <div class="header-id">Выберите пациента</div>
+                    </div>
+                    {% endif %}
+                </div>
+
+            </div>
+        </div>
+
+        <div id="modal-bg" class="modal-background" style="display:none;"></div>
+
+        <div id="add-patient-modal" class="modal" style="display:none;">
+            <h3>Заполните данные</h3>
+
+            <form id="patient-form" class="modal-form">
+
+                <div class="input_block">
+                    <label>ID</label>
+                    <input type="text" name="id">
+                </div>
+
+                <div class="input_block">
+                    <label>Возраст пациента</label>
+                    <input type="number" name="age">
+                </div>
+
+                <div class="input_block">
+                    <label>Размер опухоли, см</label>
+                    <input type="number" name="tumor">
+                </div>
+
+                <div class="input_block">
+                    <label>Молекулярный подтип</label>
+                    <select name="type">
+                        <option value="">Выберите из списка</option>
+                        <option>HR+HER2-</option>
+                        <option>HR+HER2+</option>
+                        <option>HR-HER2+</option>
+                        <option>TNBC</option>
+                    </select>
+                </div>
+
+                <div class="input_block">
+                    <label>
+                        <input type="checkbox" name="meno"> Менопауза
+                    </label>
+                    <label>
+                        <input type="checkbox" name="family"> Семейный анамнез
+                    </label>
+                </div>
+
+                <div class="buttons">
+                    <button type="button" id="reset-form" class="cancel">Сбросить</button>
+                    <input type="submit" id="submit-form" class="apply" value="Далее">
+                </div>
+
+            </form>
+        </div>
+        </div>
+    </div>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+const modal = document.getElementById("add-patient-modal");
+const modalBg = document.getElementById("modal-bg");
+const addBtn = document.querySelector(".add-patient");
+const form = document.getElementById("patient-form");
+const resetBtn = document.getElementById("reset-form");
+
+addBtn.addEventListener("click", () => {
+    modal.style.display = "flex";
+    modalBg.style.display = "block";
+});
+
+form.addEventListener("submit", (e) => {
+    e.preventDefault(); // если хочешь отправку формы на сервер — убери это
+
+    modal.style.display = "none";
+    modalBg.style.display = "none";
+});
+
+resetBtn.addEventListener("click", () => {
+    form.reset();
+});
+
+modalBg.addEventListener("click", () => {
+    modal.style.display = "none";
+    modalBg.style.display = "none";
+});
+
+$('.patient_li').click(function() {
+            const $this = $(this);
+            const patientId = $this.attr('id');
+
+            window.location.href = `/${patientId}`;
+            selectedId = patientId;
+        });
+
+function toggleItem(header) {
+    const content = header.nextElementSibling;
+    const arrow = header.querySelector('.arrow');
+
+
+    if (content.style.display === "block") {
+        content.style.display = "none";
+        arrow.classList.remove('rotate');
+    } else {
+        content.style.display = "block";
+        arrow.classList.add('rotate');
+    }
+}
+
+document.querySelectorAll('.tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            tab.classList.add('active');
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById(tab.dataset.tab).classList.add('active');
+        });
+    });
+</script>
+{% endblock %}

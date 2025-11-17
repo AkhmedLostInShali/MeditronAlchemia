@@ -17,5 +17,6 @@ class PatientEntry(SqlAlchemyBase, SerializerMixin):
     age = sqlalchemy.Column(sqlalchemy.Integer, nullable=False)
     hr = sqlalchemy.Column(sqlalchemy.Boolean, nullable=False)
     her2 = sqlalchemy.Column(sqlalchemy.Boolean, nullable=False)
+    mp = sqlalchemy.Column(sqlalchemy.Boolean, default=False)
     race = sqlalchemy.Column(sqlalchemy.String, default='White')
     menopausal_status = sqlalchemy.Column(sqlalchemy.String, nullable=False)
